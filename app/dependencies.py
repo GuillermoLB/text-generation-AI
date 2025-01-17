@@ -10,7 +10,7 @@ from app.domain.models import User as UserModel
 from app.domain.schemas import User
 from app.services.user_service import verify_token
 
-from .core.config import Settings, build_llm
+from .core.config import Settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

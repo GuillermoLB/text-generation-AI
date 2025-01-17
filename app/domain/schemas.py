@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class ModelBase(BaseModel):
@@ -10,15 +10,11 @@ class ModelBase(BaseModel):
     top_p: float
 
 
-class CreateModel(ModelBase):
+class ModelCreate(ModelBase):
     pass
 
 
-class ReadModel(ModelBase):
-    pass
-
-
-class ReadModel(ModelBase):
+class ModelRead(ModelBase):
     id: int
 
     class Config:
@@ -65,6 +61,12 @@ class TokenData(BaseModel):
 class TextGenerationBase(BaseModel):
     prompt: str
 
+    @field_validator("prompt")
+    def prompt_must_not_be_empty(cls, value):
+        if not value.strip():
+            raise ValueError("Prompt must not be empty")
+        return value
+
 
 class TextGenerationCreate(TextGenerationBase):
     pass
@@ -75,3 +77,7 @@ class TextGenerationRead(TextGenerationBase):
 
     class Config:
         orm_mode = True
+
+
+class TextGenerationUpdate(TextGenerationBase):
+    generated_text: str

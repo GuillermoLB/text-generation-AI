@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from app.domain.models import User
 from app.domain.schemas import UserCreate
 from app.services.user_service import get_password_hash
-from ...error.codes import Errors
-from ...error.exceptions import UserException
+# from ...error.codes import Errors
+# from ...error.exceptions import UserException
 
 
 def create_user(db: Session, user: UserCreate) -> User:

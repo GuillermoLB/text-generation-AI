@@ -12,3 +12,6 @@ class Settings(BaseSettings):
     LLM_ID: str = "gpt2"
     HASH_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
+    def get_connection_str(self) -> str:
+        return f"sqlite:///./{self.DB_NAME}.db"

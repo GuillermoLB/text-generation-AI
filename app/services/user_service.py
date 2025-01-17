@@ -6,6 +6,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
+from app.core.config import Settings
 from app.domain.models import User as UserModel
 from app.domain.schemas import TokenData
 
@@ -24,7 +25,7 @@ def get_password_hash(password):
 
 def create_access_token(
         data: dict,
-        settings,
+        settings: Settings,
         expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -39,7 +40,7 @@ def create_access_token(
     return encoded_jwt
 
 
-def verify_token(token: str, settings, credentials_exception):
+def verify_token(token: str, settings: Settings, credentials_exception):
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[
