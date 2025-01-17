@@ -36,5 +36,5 @@ class TextGeneration(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     prompt: Mapped[str] = mapped_column(String, nullable=False)
-    generated_text = Mapped[Optional[str]
-                            ] = mapped_column(String, nullable=True)
+    generated_text: Mapped[Optional[str]
+                           ] = mapped_column(String, nullable=True)
