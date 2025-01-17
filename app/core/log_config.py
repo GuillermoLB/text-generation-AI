@@ -25,12 +25,23 @@ LOGGING_CONFIG = {
             "formatter": "standard",
             "filename": LOG_DIR / "app.log",
         },
+        "request_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "formatter": "standard",
+            "filename": LOG_DIR / "requests.log",
+        },
     },
     "loggers": {
         "": {
             "handlers": ["console", "file"],
             "level": "DEBUG",
             "propagate": True,
+        },
+        "request_logger": {
+            "handlers": ["request_file"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }
