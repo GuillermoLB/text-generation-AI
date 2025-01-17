@@ -2,10 +2,27 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class ConfigureModel(BaseModel):
-    max_length: int = 50
-    temperature: float = 1.0
-    top_p: float = 0.9
+class ModelBase(BaseModel):
+    name: str
+    llm: str
+    max_length: int
+    temperature: float
+    top_p: float
+
+
+class CreateModel(ModelBase):
+    pass
+
+
+class ReadModel(ModelBase):
+    pass
+
+
+class ReadModel(ModelBase):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 
 class Prompt(BaseModel):
@@ -43,3 +60,18 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+
+
+class TextGenerationBase(BaseModel):
+    prompt: str
+
+
+class TextGenerationCreate(TextGenerationBase):
+    pass
+
+
+class TextGenerationRead(TextGenerationBase):
+    generated_text: str
+
+    class Config:
+        orm_mode = True
