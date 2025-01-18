@@ -8,34 +8,24 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# def validate_and_create_prompt(session: Session, prompt: str) -> TextGeneration:
-#     logger.debug(f"Validating prompt: {prompt}")
-#     if prompt == "":
-#         raise ValueError("Prompt is required")
-#     logger.debug("Prompt is valid")
-#     logger.debug("Creating text generation record")
-#     text_generation = TextGeneration(prompt=prompt)
-#     text_generation_db = text_generation_repo.create_text_generation(
-#         session=session, text_generation=text_generation)
-#     logger.debug("Text generation record created")
-#     return text_generation_db
-
-
 def generate_text(
     session: Session,
     settings: Settings,
+    model: Model,
     text_generation: TextGeneration,
 ) -> TextGeneration:
-    model = model_repo.read_model()
     generator_pipeline = get_text_generation_pipeline(
-        model=model, settings=settings)
+        model=model)
     prompt = text_generation.prompt
-    result = generator_pipeline(prompt=prompt, model=model)
+    logger.debug(f"Prompt: {prompt}")
+    result = generator_pipeline(text_inputs=prompt, max_length=model.max_length,
+                                temperature=model.temperature, top_p=model.top_p)
     generated_text = result[0]["generated_text"]
+    logger.debug(f"Text generated: {generated_text}")
     updated_text_generation = TextGeneration(
         prompt=prompt,
         generated_text=generated_text
     )
-    text_generation = text_generation_repo.update_text_generation(
-        text_generation, updated_text_generation)
+    text_generation = text_generation_repo.update_text_generation(session=session,
+                                                                  text_generation_id=text_generation.id, text_generation_update=updated_text_generation)
     return text_generation

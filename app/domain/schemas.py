@@ -3,26 +3,28 @@ from pydantic import BaseModel, field_validator
 
 
 class ModelBase(BaseModel):
-    name: str
-    llm: str
     max_length: int
     temperature: float
     top_p: float
+    # TODO: validator for max_length, temperature, top_p
 
 
 class ModelCreate(ModelBase):
-    pass
+    name: str
+    llm: str
 
 
 class ModelRead(ModelBase):
-    id: int
+    max_length: int
+    temperature: float
+    top_p: float
 
     class Config:
         orm_mode = True
 
 
-class Prompt(BaseModel):
-    prompt: str
+class ModelUpdate(ModelBase):
+    pass
 
 
 class UserBase(BaseModel):
