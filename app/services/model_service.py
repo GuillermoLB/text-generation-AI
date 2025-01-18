@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def create_or_update_model(session: Session, settings: Settings, model: ModelUpdate) -> Model:
     name = settings.MODEL_NAME
-    existing_model = model_repo.read_model(session=session, name=name)
+    existing_model = model_repo.read_model_by_name(session=session, name=name)
     if existing_model:
         model_repo.update_model(
             session=session, name=name, model=model)

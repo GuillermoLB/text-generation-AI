@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel, field_validator
 
 from app.error.codes import Errors
-from app.error.exceptions import TextGenerationException
+from app.error.exceptions import ModelException, TextGenerationException
 
 
 class ModelBase(BaseModel):
@@ -13,19 +13,22 @@ class ModelBase(BaseModel):
     @field_validator("max_length")
     def validate_max_length(cls, value):
         if value <= 0:
-            raise TextGenerationException(error=Errors.E005, code=400)
+            raise ModelException(
+                error=Errors.E005.format(max_length=value), code=400)
         return value
 
     @field_validator("temperature")
     def validate_temperature(cls, value):
-        if not (0.0 <= value <= 1.0):
-            raise TextGenerationException(error=Errors.E006, code=400)
+        if not (0.0 < value <= 1.0):
+            raise ModelException(
+                error=Errors.E006.format(temperature=value), code=400)
         return value
 
     @field_validator("top_p")
     def validate_top_p(cls, value):
         if not (0.0 <= value <= 1.0):
-            raise TextGenerationException(error=Errors.E007, code=400)
+            raise ModelException(
+                error=Errors.E007.format(top_p=value), code=400)
         return value
 
 

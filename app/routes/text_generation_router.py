@@ -22,7 +22,7 @@ def create_text_generation(
         logger.info(f"Generating text for prompt: {
                     text_generation_create.prompt}")
 
-        model = model_repo.read_model(
+        model = model_repo.read_model_by_name(
             session=session, name=settings.MODEL_NAME)
         text_generation = text_generation_repo.create_text_generation(
             session=session, text_generation=text_generation_create)
