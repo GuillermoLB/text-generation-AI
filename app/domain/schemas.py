@@ -1,12 +1,32 @@
 from typing import Optional
 from pydantic import BaseModel, field_validator
 
+from app.error.codes import Errors
+from app.error.exceptions import TextGenerationException
+
 
 class ModelBase(BaseModel):
     max_length: int
     temperature: float
     top_p: float
-    # TODO: validator for max_length, temperature, top_p
+
+    @field_validator("max_length")
+    def validate_max_length(cls, value):
+        if value <= 0:
+            raise TextGenerationException(error=Errors.E005, code=400)
+        return value
+
+    @field_validator("temperature")
+    def validate_temperature(cls, value):
+        if not (0.0 <= value <= 1.0):
+            raise TextGenerationException(error=Errors.E006, code=400)
+        return value
+
+    @field_validator("top_p")
+    def validate_top_p(cls, value):
+        if not (0.0 <= value <= 1.0):
+            raise TextGenerationException(error=Errors.E007, code=400)
+        return value
 
 
 class ModelCreate(ModelBase):
@@ -66,7 +86,7 @@ class TextGenerationBase(BaseModel):
     @field_validator("prompt")
     def prompt_must_not_be_empty(cls, value):
         if not value.strip():
-            raise ValueError("Prompt must not be empty")
+            raise TextGenerationException(error=Errors.E004, code=400)
         return value
 
 

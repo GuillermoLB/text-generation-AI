@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from app.domain.models import Model
 from app.domain.schemas import ModelCreate, ModelUpdate
-
-# TODO: arguments should be schemas
+from app.error.codes import Errors
+from app.error.exceptions import ModelException
 
 
 def create_model(session: Session, model: ModelCreate) -> Model:
@@ -19,8 +19,18 @@ def create_model(session: Session, model: ModelCreate) -> Model:
     return db_model
 
 
-def read_model(session: Session, name: str) -> Model:
-    return session.query(Model).filter(Model.name == name).first()
+def read_model(session: Session, model_id: int) -> Model:
+    model = session.query(Model).filter(Model.id == model_id).first()
+    if not model:
+        raise ModelException(error=Errors.E001, code=404)
+    return model
+
+
+def read_model_by_name(session: Session, name: str) -> Model:
+    model = session.query(Model).filter(Model.name == name).first()
+    if not model:
+        raise ModelException(error=Errors.E001, code=404)
+    return model
 
 
 def update_model(session: Session, name: str, model: ModelUpdate) -> Model:
