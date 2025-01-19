@@ -28,12 +28,12 @@ def read_model(session: Session, model_id: int) -> Model:
 
 def read_model_by_name(session: Session, name: str) -> Model:
     model = session.query(Model).filter(Model.name == name).first()
-    if not model:
-        raise ModelException(error=Errors.E001, code=404)
+    # if not model:
+    #     raise ModelException(error=Errors.E001, code=404)
     return model
 
 
-def update_model(session: Session, name: str, model: ModelUpdate) -> Model:
+def update_model_by_name(session: Session, name: str, model: ModelUpdate) -> Model:
     db_model = session.query(Model).filter(Model.name == name).first()
     db_model.max_length = model.max_length
     db_model.temperature = model.temperature

@@ -22,3 +22,10 @@ class TextGenerationException(CustomException):
     """
     All Text_generation' related exceptions with specific error codes
     """
+
+
+class UserException(CustomException):
+
+    """
+    All User' related exceptions with specific error codes
+    """

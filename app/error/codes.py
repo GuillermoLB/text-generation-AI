@@ -19,3 +19,4 @@ class Errors(metaclass=ErrorsWithCodes):
     E005 = "Not correct value: {max_length}. Max_length must be an int number greater than 0"
     E006 = "Not correct value: {temperature}. Temperature must be a float number between 0.0 and 1.0"
     E007 = "Not correct value: {top_p}. Top_p must be a float number between 0.0 and 1.0"
+    E008 = "User with username {username} already exists"

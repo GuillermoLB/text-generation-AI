@@ -12,7 +12,7 @@ def create_or_update_model(session: Session, settings: Settings, model: ModelUpd
     name = settings.MODEL_NAME
     existing_model = model_repo.read_model_by_name(session=session, name=name)
     if existing_model:
-        model_repo.update_model(
+        model_repo.update_model_by_name(
             session=session, name=name, model=model)
         logger.debug(f"Updated model: {name}")
         return existing_model

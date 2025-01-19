@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy import Boolean, Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -8,16 +8,14 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 Base = declarative_base()
 
 
-class Base(DeclarativeBase):
-    pass
-
-
 class User(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(
+        String, unique=True, nullable=False, index=True)
     hashed_password: Mapped[str] = mapped_column(String, nullable=False)
+    disabled: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 
 
 class Model(Base):

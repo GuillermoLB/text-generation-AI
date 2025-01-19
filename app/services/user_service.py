@@ -9,18 +9,8 @@ from sqlalchemy.orm import Session
 from app.core.config import Settings
 from app.domain.models import User as UserModel
 from app.domain.schemas import TokenData
-
-# Load environment variables from .env file
-load_dotenv()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
+from app.repos import user_repo
+from app.utils.auth_utils import verify_password
 
 
 def create_access_token(
@@ -54,8 +44,8 @@ def verify_token(token: str, settings: Settings, credentials_exception):
     return token_data
 
 
-def authenticate_user(db: Session, username: str, password: str):
-    user = db.query(UserModel).filter(UserModel.username == username).first()
+def authenticate_user(session: Session, username: str, password: str):
+    user = user_repo.read_user_by_name(session, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):

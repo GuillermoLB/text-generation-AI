@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
-from app.dependencies import SessionDep, SettingsDep
+from app.dependencies import SessionDep, SettingsDep, UserDep
 from app.domain.schemas import ModelCreate, ModelRead, TextGenerationRead, TextGenerationCreate
 from app.domain.models import TextGeneration
 from app.error.exceptions import CustomException
@@ -12,11 +12,12 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.put("/models", response_model=ModelRead)
+@router.put("/models", response_model=ModelRead, )
 def update_model(
     model: ModelCreate,
     settings: SettingsDep,
     session: SessionDep,
+    current_user: UserDep,
 ):
     try:
         model_service.create_or_update_model(
