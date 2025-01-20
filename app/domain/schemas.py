@@ -43,7 +43,7 @@ class ModelRead(ModelBase):
     top_p: float
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ModelUpdate(ModelBase):
@@ -63,7 +63,7 @@ class UserInDBBase(UserBase):
     disabled: Optional[bool] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class User(UserInDBBase):
@@ -101,7 +101,7 @@ class TextGenerationRead(TextGenerationBase):
     generated_text: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TextGenerationUpdate(TextGenerationBase):

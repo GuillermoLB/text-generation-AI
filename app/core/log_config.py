@@ -6,9 +6,7 @@ from app.core.config import Settings
 
 # Get settings instance
 settings = Settings()
-
-# Use environment variable for log directory with fallback to local directory
-LOG_DIR = Path(os.getenv("APP_LOG_DIR", "logs"))
+LOG_DIR = Path(settings.LOG_DIR)
 
 
 def setup_logging():
