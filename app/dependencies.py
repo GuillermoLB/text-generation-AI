@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.domain.models import User as UserModel
 from app.domain.schemas import User
+from app.error.codes import Errors
+from app.error.exceptions import AuthenticationException
 from app.services.user_service import verify_token
 
 from .core.config import Settings
@@ -36,24 +38,20 @@ def get_session():
 
 
 def get_current_user(
-    db: Session = Depends(get_session), token: str = Depends(oauth2_scheme)
+    db: Session = Depends(get_session),
+    token: str = Depends(oauth2_scheme)
 ):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    token_data = verify_token(token, get_settings(), credentials_exception)
+    token_data = verify_token(token, get_settings(), None)
     user = db.query(UserModel).filter(
         UserModel.username == token_data.username).first()
     if user is None:
-        raise credentials_exception
+        raise AuthenticationException(error=Errors.E003, code=401)
     return user
 
 
 def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise AuthenticationException(error=Errors.E003, code=400)
     return current_user
 
 

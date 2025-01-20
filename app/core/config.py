@@ -7,8 +7,8 @@ load_dotenv(override=True)
 
 
 class Settings(BaseSettings):
-    MODEL_NAME: str = "Roams_generator"
     DB_NAME: str = "database"
+    MODEL_NAME: str = "Roams_generator"
     LLM_ID: str = "gpt2"
     HASH_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 120

@@ -29,3 +29,10 @@ class UserException(CustomException):
     """
     All User' related exceptions with specific error codes
     """
+
+
+class AuthenticationException(CustomException):
+
+    """
+    All User' related exceptions with specific error codes
+    """

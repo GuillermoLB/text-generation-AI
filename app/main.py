@@ -1,5 +1,7 @@
 import logging
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
+from fastapi.responses import JSONResponse
+from app.error.exceptions import AuthenticationException, CustomException
 from app.routes import model_router, text_generation_router, user_router
 from app.core.log_config import setup_logging
 
@@ -19,11 +21,48 @@ app.include_router(user_router.router, tags=["Users"])
 
 
 @app.middleware("http")
-async def log_requests(request: Request, call_next):
-    request_logger.info(f"Request: {request.method} {request.url}")
-    response = await call_next(request)
-    request_logger.info(f"Response: {response.status_code}")
-    return response
+async def logging_middleware(request: Request, call_next):
+    try:
+        # Log request
+        request_logger.info(f"Request: {request.method} {request.url}")
+        request_logger.info(f"Headers: {dict(request.headers)}")
+
+        # Process request
+        response = await call_next(request)
+
+        # Get response body
+        response_body = b""
+        async for chunk in response.body_iterator:
+            response_body += chunk
+
+        # Create new response with consumed body
+        new_response = Response(
+            content=response_body,
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.media_type
+        )
+
+        # Log response with details
+        request_logger.info(f"Response: {response.status_code}")
+        request_logger.info(f"Headers: {dict(response.headers)}")
+
+        try:
+            body = json.loads(response_body)
+            request_logger.info(f"Body: {body}")
+        except:
+            request_logger.info(f"Body: {response_body.decode()}")
+
+        return new_response
+
+    except Exception as e:
+        # Log error
+        request_logger.error(f"Error processing {request.method} {
+                             request.url}: {str(e)}")
+        return JSONResponse(
+            status_code=500,
+            content={"detail": str(e)}
+        )
 
 
 @app.get("/")

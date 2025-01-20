@@ -28,5 +28,5 @@ def read_user_by_name(session: Session, username: str) -> User:
     db_user = session.query(User).filter(User.username == username).first()
     if not db_user:
         raise UserException(error=Errors.E003.format(
-            username=db_user.username), code=400)
+            username=username), code=400)
     return db_user

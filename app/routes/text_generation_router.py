@@ -28,13 +28,21 @@ def create_text_generation(
             session=session, name=settings.MODEL_NAME)
         if not model:
             raise ModelException(error=Errors.E001, code=404)
+
         text_generation = text_generation_repo.create_text_generation(
             session=session, text_generation=text_generation_create)
-        text_generation = text_generation_service.generate_text(session=session, settings=settings, model=model,
-                                                                text_generation=text_generation)
+        text_generation = text_generation_service.generate_text(
+            session=session,
+            settings=settings,
+            model=model,
+            text_generation=text_generation
+        )
+
         logger.info(f"Generated text: {text_generation.generated_text}")
         return text_generation
+
     except CustomException as e:
+        # logger.error(f"Error generating text: {e.error}")
         raise HTTPException(status_code=e.code, detail=e.error)
 
 
@@ -47,4 +55,5 @@ def read_text_generations(
         records = text_generation_repo.read_text_generations(session=session)
         return records
     except CustomException as e:
+        # logger.error(f"Error reading history: {e.error}")
         raise HTTPException(status_code=e.code, detail=e.error)

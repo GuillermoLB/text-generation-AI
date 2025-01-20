@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session
 from app.core.config import Settings
 from app.domain.models import User as UserModel
 from app.domain.schemas import TokenData
+from app.error.codes import Errors
+from app.error.exceptions import AuthenticationException
 from app.repos import user_repo
 from app.utils.auth_utils import verify_password
 
@@ -32,15 +34,14 @@ def create_access_token(
 
 def verify_token(token: str, settings: Settings, credentials_exception):
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[
-                settings.ALGORITHM])
+        payload = jwt.decode(token, settings.SECRET_KEY,
+                             algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            raise credentials_exception
+            raise AuthenticationException(error=Errors.E010, code=401)
         token_data = TokenData(username=username)
     except JWTError:
-        raise credentials_exception
+        raise AuthenticationException(error=Errors.E010, code=401)
     return token_data
 
 
