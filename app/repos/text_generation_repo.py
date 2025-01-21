@@ -2,8 +2,6 @@ from sqlalchemy.orm import Session
 from app.domain.models import TextGeneration
 from app.domain.schemas import TextGenerationCreate, TextGenerationUpdate
 
-# TODO: arguments should be schemas
-
 
 def create_text_generation(session: Session, text_generation: TextGenerationCreate) -> TextGeneration:
     db_text_generation = TextGeneration(

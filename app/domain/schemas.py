@@ -58,6 +58,11 @@ class UserCreate(UserBase):
     password: str
 
 
+class UserRead(UserBase):
+    class Config:
+        from_attributes = True
+
+
 class UserInDBBase(UserBase):
     id: Optional[int] = None
     disabled: Optional[bool] = None

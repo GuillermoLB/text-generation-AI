@@ -10,7 +10,7 @@ from app.core.config import Settings
 from app.domain.models import User as UserModel
 from app.domain.schemas import TokenData
 from app.error.codes import Errors
-from app.error.exceptions import AuthenticationException
+from app.error.exceptions import AuthenticationException, UserException
 from app.repos import user_repo
 from app.utils.auth_utils import verify_password
 
@@ -47,8 +47,7 @@ def verify_token(token: str, settings: Settings, credentials_exception):
 
 def authenticate_user(session: Session, username: str, password: str):
     user = user_repo.read_user_by_name(session, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
+    if not user or not verify_password(password, user.hashed_password):
+        raise UserException(error=Errors.E003.format(
+            username=username), code=400)
     return user

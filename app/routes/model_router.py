@@ -12,13 +12,50 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.put("/models", response_model=ModelRead, )
+@router.put("/models",
+            response_model=ModelRead,
+            summary="Update model parameters",
+            responses={
+                200: {
+                    "description": "Successfully updated model",
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "max_length": 100,
+                                "temperature": 0.7,
+                                "top_p": 0.9
+                            }
+                        }
+                    }
+                },
+                400: {
+                    "description": "Not correct value..."
+                },
+                401: {
+                    "description": "Invalid or expired token"
+                }
+            })
 def update_model(
     model: ModelUpdate,
     settings: SettingsDep,
     session: SessionDep,
     current_user: UserDep,
 ):
+    """
+    Update model configuration parameters.
+
+    Requires valid authentication token.
+
+    Parameters:
+    - **max_length**: Maximum length of generated text
+    - **temperature**: Sampling temperature
+    - **top_p**: Top-p sampling parameter
+
+    Returns:
+    - **max_length**: Maximum length of generated text
+    - **temperature**: Sampling temperature
+    - **top_p**: Top-p sampling parameter
+    """
     try:
         model_service.create_or_update_model(
             session=session, settings=settings, model=model)
