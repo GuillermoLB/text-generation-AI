@@ -24,8 +24,8 @@ FastAPI-based REST API for text generation using Hugging Face models, developed 
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/roams-ai.git
-cd roams-ai
+git clone https://github.com/GuillermoLB/Prueba-tecnica-Roams.git
+cd Prueba-tecnica-Roams
 
 # Setup environment
 cp .env.template .env
