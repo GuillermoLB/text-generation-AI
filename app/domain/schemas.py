@@ -37,7 +37,7 @@ class ModelCreate(ModelBase):
     llm: str
 
 
-class ModelRead(ModelBase):
+class ModelRead(ModelCreate):
     max_length: int
     temperature: float
     top_p: float

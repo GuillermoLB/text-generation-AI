@@ -1,6 +1,5 @@
 from transformers import pipeline
 
-from app.core.config import Settings
 from app.domain.models import Model
 
 

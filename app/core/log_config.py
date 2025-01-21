@@ -1,6 +1,5 @@
-from typing import Annotated, ClassVar
+from typing import ClassVar
 
-from fastapi import Depends
 from pydantic import BaseModel
 
 from app.core.config import Settings
@@ -39,10 +38,5 @@ class LogConfig(BaseModel):
             "handlers": ["default"],
             "level": "INFO",
             "propagate": False,
-        },
-        "openai._base_client": {
-            "handlers": ["default"],
-            "level": settings.LOG_LEVEL,
-            "propagate": False,
-        },
+        }
     }

@@ -1,11 +1,9 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
 from app.dependencies import SessionDep, SettingsDep, UserDep
-from app.domain.schemas import ModelCreate, ModelRead, ModelUpdate, TextGenerationRead, TextGenerationCreate
-from app.domain.models import TextGeneration
+from app.domain.schemas import ModelRead, ModelUpdate
 from app.error.exceptions import CustomException
-from app.repos import model_repo, text_generation_repo
-from app.services import model_service, text_generation_service
+from app.services import model_service
 import logging
 
 router = APIRouter()
@@ -55,11 +53,13 @@ def update_model(
     - **max_length**: Maximum length of generated text
     - **temperature**: Sampling temperature
     - **top_p**: Top-p sampling parameter
+    - **name**: Model name
+    - **llm**: llm id
     """
     try:
-        model_service.create_or_update_model(
+        updated_model = model_service.create_or_update_model(
             session=session, settings=settings, model=model)
-        return model
+        return updated_model
     except CustomException as e:
         # logger.log(f"Error updating model: {e.error}")
         raise HTTPException(status_code=e.code, detail=e.error)

@@ -1,12 +1,11 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
 from app.dependencies import SessionDep, SettingsDep, UserDep
-from app.domain.schemas import ModelCreate, ModelRead, TextGenerationRead, TextGenerationCreate
-from app.domain.models import TextGeneration
+from app.domain.schemas import TextGenerationRead, TextGenerationCreate
 from app.error.codes import Errors
 from app.error.exceptions import CustomException, ModelException
 from app.repos import model_repo, text_generation_repo
-from app.services import model_service, text_generation_service
+from app.services import text_generation_service
 import logging
 
 router = APIRouter()

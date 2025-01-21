@@ -1,10 +1,10 @@
 import logging.config
 import time
 from uuid import uuid4
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from app.dependencies import get_settings
-from app.error.exceptions import AuthenticationException, CustomException
+from app.error.exceptions import CustomException
 from app.routes import model_router, text_generation_router, user_router
 from app.core.log_config import LogConfig
 

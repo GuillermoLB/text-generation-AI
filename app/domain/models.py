@@ -1,9 +1,7 @@
 from typing import Optional
-from sqlalchemy import Boolean, Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy import Boolean, Integer, String, Float
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
 Base = declarative_base()
 
