@@ -3,20 +3,5 @@ services:
     build:
       context: .
     ports:
-      - "8000:8000"
-    volumes:
-      - ./app:/app/app
-      - ./logs:/tmp/logs
-      - huggingface_cache:/home/appuser/.cache/huggingface
-    env_file:
-      - .env
-    user: appuser
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-volumes:
-  huggingface_cache:
+      - 8000:8000
 

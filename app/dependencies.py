@@ -41,12 +41,19 @@ def get_current_user(
     db: Session = Depends(get_session),
     token: str = Depends(oauth2_scheme)
 ):
-    token_data = verify_token(token, get_settings(), None)
-    user = db.query(UserModel).filter(
-        UserModel.username == token_data.username).first()
-    if user is None:
-        raise AuthenticationException(error=Errors.E003, code=401)
-    return user
+    try:
+        token_data = verify_token(token, get_settings(), None)
+        user = db.query(UserModel).filter(
+            UserModel.username == token_data.username).first()
+        if user is None:
+            raise AuthenticationException(error=Errors.E003, code=401)
+        return user
+    except AuthenticationException as e:
+        raise HTTPException(
+            status_code=e.code,
+            detail=e.error,
+            headers={"WWW-Authenticate": "Bearer"}
+        )
 
 
 def get_current_active_user(current_user: User = Depends(get_current_user)):

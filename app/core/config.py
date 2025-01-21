@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     # Security
     HASH_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 120
-    SECRET_KEY: str
+    SECRET_KEY: str = "7b4e76599972241d849cb98bf5ea1763cca2482197c1ac1715b4acfde93043a4"
     ALGORITHM: str = "HS256"
 
     # Logging
