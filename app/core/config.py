@@ -1,4 +1,7 @@
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
+
+load_dotenv()
 
 
 class Settings(BaseSettings):
@@ -16,7 +19,8 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
 
     # Logging
-    APP_LOG_DIR: str = "/app/var/log"
+    LOG_LEVEL: str = "INFO"
+    DISABLE_LOGGERS: bool = False
 
     class Config:
         env_file = ".env"

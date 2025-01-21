@@ -1,14 +1,18 @@
-import logging
+import logging.config
+import time
+from uuid import uuid4
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
+from app.dependencies import get_settings
 from app.error.exceptions import AuthenticationException, CustomException
 from app.routes import model_router, text_generation_router, user_router
-from app.core.log_config import setup_logging
+from app.core.log_config import LogConfig
 
-# Setup logging
-setup_logging()
+logging.config.dictConfig(LogConfig().model_dump())
+
 logger = logging.getLogger(__name__)
-request_logger = logging.getLogger("request_logger")
+
+settings = get_settings()
 
 app = FastAPI(title="Roams Backend IA")
 
@@ -21,48 +25,27 @@ app.include_router(user_router.router, tags=["Users"])
 
 
 @app.middleware("http")
-async def logging_middleware(request: Request, call_next):
-    try:
-        # Log request
-        request_logger.info(f"Request: {request.method} {request.url}")
-        request_logger.info(f"Headers: {dict(request.headers)}")
+async def log_request_response(request: Request, call_next):
+    request_id = str(uuid4())
+    start_time = time.time()
 
-        # Process request
-        response = await call_next(request)
+    # Log request metadata
+    path = request.url.path + \
+        ("?" + request.url.query if request.url.query else "")
+    logger.info(f"Request {request_id}: {request.method} {path}")
 
-        # Get response body
-        response_body = b""
-        async for chunk in response.body_iterator:
-            response_body += chunk
+    # Process request
+    response = await call_next(request)
 
-        # Create new response with consumed body
-        new_response = Response(
-            content=response_body,
-            status_code=response.status_code,
-            headers=dict(response.headers),
-            media_type=response.media_type
-        )
+    # Log response metadata
+    process_time = round((time.time() - start_time) * 1000)
+    logger.info(
+        f"Response {request_id}: Status={
+            response.status_code} Duration={process_time}ms "
+        f"Method={request.method} Path={path}"
+    )
 
-        # Log response with details
-        request_logger.info(f"Response: {response.status_code}")
-        request_logger.info(f"Headers: {dict(response.headers)}")
-
-        try:
-            body = json.loads(response_body)
-            request_logger.info(f"Body: {body}")
-        except:
-            request_logger.info(f"Body: {response_body.decode()}")
-
-        return new_response
-
-    except Exception as e:
-        # Log error
-        request_logger.error(f"Error processing {request.method} {
-                             request.url}: {str(e)}")
-        return JSONResponse(
-            status_code=500,
-            content={"detail": str(e)}
-        )
+    return response
 
 
 @app.get("/")

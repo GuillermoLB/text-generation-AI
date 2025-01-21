@@ -1,66 +1,48 @@
-import os
-import logging
-import logging.config
-from pathlib import Path
+from typing import Annotated, ClassVar
+
+from fastapi import Depends
+from pydantic import BaseModel
+
 from app.core.config import Settings
+from app.dependencies import SettingsDep
 
-# Get log directory from environment variable with fallback
-LOG_DIR = Path(os.getenv("APP_LOG_DIR", "var/log"))
+settings = Settings()
 
 
-def setup_logging():
-    """Configure logging for the application"""
-    # Create logs directory with proper permissions
-    os.makedirs(LOG_DIR, exist_ok=True)
+class LogConfig(BaseModel):
+    """Logging configuration to be set for the server"""
 
-    # Create log files if they don't exist
-    log_file = LOG_DIR / "app.log"
-    requests_file = LOG_DIR / "requests.log"
+    # Annotate settings as ClassVar since it's a class-level variable
+    settings: ClassVar[Settings] = settings
+    LOG_FORMAT: str = "%(levelprefix)s %(asctime)s [%(name)s:%(lineno)d] %(message)s"
+    LOG_LEVEL: str = settings.LOG_LEVEL
 
-    for file in [log_file, requests_file]:
-        file.touch(exist_ok=True)
-
-    LOGGING_CONFIG = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "formatters": {
-            "standard": {
-                "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            },
-        },
-        "handlers": {
-            "console": {
-                "level": "DEBUG",
-                "class": "logging.StreamHandler",
-                "formatter": "standard",
-            },
-            "file": {
-                "level": "DEBUG",
-                "class": "logging.FileHandler",
-                "formatter": "standard",
-                "filename": str(log_file),
-                "mode": "a",
-            },
-            "request_file": {
-                "level": "INFO",
-                "class": "logging.FileHandler",
-                "formatter": "standard",
-                "filename": str(requests_file),
-                "mode": "a",
-            }
-        },
-        "loggers": {
-            "": {  # Root logger
-                "handlers": ["console", "file"],
-                "level": "DEBUG",
-                "propagate": True
-            },
-            "request_logger": {  # Request logger
-                "handlers": ["request_file"],
-                "level": "INFO",
-                "propagate": False
-            }
+    # Logging config
+    version: int = 1
+    disable_existing_loggers: bool = settings.DISABLE_LOGGERS
+    formatters: dict = {
+        "default": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         }
     }
-
-    logging.config.dictConfig(LOGGING_CONFIG)
+    handlers: dict = {
+        "default": {
+            "formatter": "default",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stderr",
+        }
+    }
+    # Root logger is configurable. Other verbose loggers are set to INFO always
+    loggers: dict = {
+        "app": {"handlers": ["default"], "level": settings.LOG_LEVEL},
+        "botocore.parsers": {
+            "handlers": ["default"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "openai._base_client": {
+            "handlers": ["default"],
+            "level": settings.LOG_LEVEL,
+            "propagate": False,
+        },
+    }
