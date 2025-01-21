@@ -46,12 +46,13 @@ def get_current_user(
         user = db.query(UserModel).filter(
             UserModel.username == token_data.username).first()
         if user is None:
-            raise AuthenticationException(error=Errors.E003, code=401)
+            raise AuthenticationException(
+                error=Errors.E011, code=401)  # User not found
         return user
     except AuthenticationException as e:
         raise HTTPException(
             status_code=e.code,
-            detail=e.error,
+            detail=Errors.E010,  # Invalid or expired token
             headers={"WWW-Authenticate": "Bearer"}
         )
 
