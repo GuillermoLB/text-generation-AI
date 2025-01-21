@@ -29,6 +29,12 @@ RUN adduser \
     chown -R appuser:appuser /app /home/appuser && \
     chmod -R 777 /app/logs /home/appuser/.cache/huggingface
 
+# Create directory structure and set permissions
+RUN mkdir -p /app/var/log && \
+    chown -R appuser:appuser /app && \
+    chmod -R 755 /app && \
+    chmod -R 777 /app/var/log
+
 # Copy configuration files first
 COPY alembic.ini .
 COPY alembic/ ./alembic/
@@ -56,3 +62,9 @@ USER appuser
 # Expose port and set entrypoint
 EXPOSE 8000
 ENTRYPOINT ["./scripts/entrypoint.sh"]
+
+USER root
+RUN mkdir -p /tmp/logs && \
+    chmod 777 /tmp/logs
+
+USER appuser

@@ -4,9 +4,8 @@ import logging.config
 from pathlib import Path
 from app.core.config import Settings
 
-# Get settings instance
-settings = Settings()
-LOG_DIR = Path(settings.LOG_DIR)
+# Get log directory from environment variable with fallback
+LOG_DIR = Path(os.getenv("APP_LOG_DIR", "var/log"))
 
 
 def setup_logging():
