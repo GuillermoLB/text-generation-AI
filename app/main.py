@@ -17,13 +17,14 @@ settings = get_settings()
 app = FastAPI(
     title="Roams AI API",
     description="""
-    AI-powered text generation API with customizable model parameters.
+AI-powered text generation API with customizable model parameters.
     
-    ## Features
-    * Text generation using AI models
-    * Model parameter customization
-    * User authentication
-    """,
+## Features
+
+* Text generation using AI models
+* Model parameter customization
+* User authentication
+""",
     version="1.0.0",
     openapi_tags=[
         {
