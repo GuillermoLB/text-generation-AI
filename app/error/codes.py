@@ -12,7 +12,7 @@ class Warnings(metaclass=ErrorsWithCodes):
 
 
 class Errors(metaclass=ErrorsWithCodes):
-    E001 = "Model not found"
+    E001 = "Model configuration not found"
     E002 = "Text_generation not found"
     E003 = "Incorrect username or password"
     E004 = "Prompt cannot be empty"

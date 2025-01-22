@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
                  },
                  400: {"description": "Invalid prompt or parameters"},
                  401: {"description": "Invalid or expired token"},
-                 404: {"description": "Model not found"},
+                 404: {"description": "Model configuration not found"},
                  500: {"description": "Internal server error or AI service unavailable"}
              })
 async def create_text_generation(
