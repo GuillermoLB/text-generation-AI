@@ -1,4 +1,4 @@
-# Roams AI - Text Generation API
+# Text Generation AI
 
 FastAPI-based REST API for text generation using Hugging Face models, developed as a technical assessment project.
 
